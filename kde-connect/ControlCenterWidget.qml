@@ -23,5 +23,9 @@ NIconButtonHot {
     icon: KDEConnectUtils.getConnectionStateIcon(KDEConnect.mainDevice, KDEConnect.daemonAvailable)
     tooltipText: getTooltip(KDEConnect.mainDevice)
 
-    onClicked: pluginApi?.togglePanel(screen, this)
+    onClicked: {
+        if (pluginApi) {
+            pluginApi.togglePanel(screen);
+        }
+    }
 }
