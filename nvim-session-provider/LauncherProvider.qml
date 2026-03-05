@@ -155,6 +155,9 @@ Item {
         loaded = true;
         loading = false;
         Logger.i("NeovimSessionProvider", "Finished loading session files");
+        if (launcher && launcher.activeProvider == root) {
+            launcher.updateResults();
+        }
     }
 
     function getWorkspacePath(sessionText) {

@@ -114,6 +114,9 @@ Item {
         }
 
         loading = false;
+        if (launcher && launcher.activeProvider == root) {
+            launcher.updateResults();
+        }
     }
 
     function onOpened() {
