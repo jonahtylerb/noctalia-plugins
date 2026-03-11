@@ -15,7 +15,7 @@ Item {
     // Plugin API (injected by PluginPanelSlot)
     property var pluginApi: null
 
-		// Screen context - store reference for child components
+    // Screen context - store reference for child components
     property var currentScreen: screen
 
     // Track currently open ToDo context menu
@@ -120,7 +120,7 @@ Item {
         }
     }
 
-		Keys.onDigit1Pressed: filterType = ""
+    Keys.onDigit1Pressed: filterType = ""
     Keys.onDigit2Pressed: filterType = "Text"
     Keys.onDigit3Pressed: filterType = "Image"
     Keys.onDigit4Pressed: filterType = "Color"
@@ -134,24 +134,24 @@ Item {
         id: mainContainer
         anchors.fill: parent
 
-				NIconButton {
-					visible: pluginApi?.mainInstance?.showCloseButton ?? false
-					anchors.top: parent.top
-					anchors.right: parent.right
-					anchors.margins: Style.marginM
-					z: 10
-					icon: "x"
-					tooltipText: pluginApi?.tr("panel.close") || "Close"
-					colorBg: (typeof Color !== "undefined") ? Color.mSurfaceVariant : "#444444"
-					colorBgHover: (typeof Color !== "undefined") ? Color.mError : "#CC0000"
-					colorFg: (typeof Color !== "undefined") ? Color.mOnSurface : "#FFFFFF"
-					colorFgHover: (typeof Color !== "undefined") ? Color.mOnError : "#FFFFFF"
-					onClicked: {
-							if (root.pluginApi) {
-									root.pluginApi.closePanel(screen);
-							}
-					}
-				}
+        NIconButton {
+            visible: pluginApi?.mainInstance?.showCloseButton ?? false
+            anchors.top: parent.top
+            anchors.right: parent.right
+            anchors.margins: Style.marginM
+            z: 10
+            icon: "x"
+            tooltipText: pluginApi?.tr("panel.close") || "Close"
+            colorBg: (typeof Color !== "undefined") ? Color.mSurfaceVariant : "#444444"
+            colorBgHover: (typeof Color !== "undefined") ? Color.mError : "#CC0000"
+            colorFg: (typeof Color !== "undefined") ? Color.mOnSurface : "#FFFFFF"
+            colorFgHover: (typeof Color !== "undefined") ? Color.mOnError : "#FFFFFF"
+            onClicked: {
+                if (root.pluginApi) {
+                    root.pluginApi.closePanel(screen);
+                }
+            }
+        }
 
         // CLIPBOARD PANEL - Bottom, full width (horizontal)
         Rectangle {
@@ -165,112 +165,334 @@ Item {
             opacity: 1.0  // Override global panel opacity
 
             Rectangle {
-							topLeftRadius: Style.radiusM
-							topRightRadius: Style.radiusM
-							bottomLeftRadius: 0
-							bottomRightRadius: 0
-							opacity: 1.0
+                topLeftRadius: Style.radiusM
+                topRightRadius: Style.radiusM
+                bottomLeftRadius: 0
+                bottomRightRadius: 0
+                opacity: 1.0
             }
 
             ColumnLayout {
-            anchors.fill: parent
-            anchors.margins: Style.marginL
-            spacing: Style.marginM
-
-            RowLayout {
-                Layout.fillWidth: true
+                anchors.fill: parent
+                anchors.margins: Style.marginL
                 spacing: Style.marginM
 
-                NText {
-                    text: pluginApi?.tr("panel.title") || "Clipboard History"
-                    font.bold: true
-                    font.pointSize: Style.fontSizeL
-                    Layout.alignment: Qt.AlignVCenter
-                    Layout.topMargin: -2 * Style.uiScaleRatio
-                }
-
-                Item {
+                RowLayout {
                     Layout.fillWidth: true
-                }
+                    spacing: Style.marginM
 
-                NIconButton {
-                    icon: "settings"
-                    tooltipText: pluginApi?.tr("panel.settings") || "Settings"
-                    Layout.alignment: Qt.AlignVCenter
-                    colorBg: (typeof Color !== "undefined") ? Color.mSurfaceVariant : "#444444"
-                    colorBgHover: (typeof Color !== "undefined") ? Color.mHover : "#666666"
-                    colorFg: (typeof Color !== "undefined") ? Color.mOnSurface : "#FFFFFF"
-                    colorFgHover: (typeof Color !== "undefined") ? Color.mOnSurface : "#FFFFFF"
-                    onClicked: {
-                        if (root.pluginApi) {
-                            BarService.openPluginSettings(screen, root.pluginApi.manifest);
-                        }
+                    NText {
+                        text: pluginApi?.tr("panel.title") || "Clipboard History"
+                        font.bold: true
+                        font.pointSize: Style.fontSizeL
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.topMargin: -2 * Style.uiScaleRatio
                     }
-                }
 
-                NTextInput {
-                    id: searchInput
-                    Layout.preferredWidth: 250
-                    Layout.alignment: Qt.AlignVCenter
-                    placeholderText: pluginApi?.tr("panel.search-placeholder") || "Search..."
-                    text: root.searchText
-                    onTextChanged: root.searchText = text
+                    Item {
+                        Layout.fillWidth: true
+                    }
 
-                    Keys.onEscapePressed: {
-                        if (text !== "") {
-                            text = "";
-                        } else {
-                            root.onEscapePressed();
+                    NIconButton {
+                        icon: "settings"
+                        tooltipText: pluginApi?.tr("panel.settings") || "Settings"
+                        Layout.alignment: Qt.AlignVCenter
+                        colorBg: (typeof Color !== "undefined") ? Color.mSurfaceVariant : "#444444"
+                        colorBgHover: (typeof Color !== "undefined") ? Color.mHover : "#666666"
+                        colorFg: (typeof Color !== "undefined") ? Color.mOnSurface : "#FFFFFF"
+                        colorFgHover: (typeof Color !== "undefined") ? Color.mOnSurface : "#FFFFFF"
+                        onClicked: {
+                            if (root.pluginApi) {
+                                BarService.openPluginSettings(screen, root.pluginApi.manifest);
+                            }
                         }
                     }
-                    Keys.onLeftPressed: event => {
-                        if (searchInput.cursorPosition === 0) {
-                            root.onLeftPressed();
+
+                    NTextInput {
+                        id: searchInput
+                        Layout.preferredWidth: 250
+                        Layout.alignment: Qt.AlignVCenter
+                        placeholderText: pluginApi?.tr("panel.search-placeholder") || "Search..."
+                        text: root.searchText
+                        onTextChanged: root.searchText = text
+
+                        Keys.onEscapePressed: {
+                            if (text !== "") {
+                                text = "";
+                            } else {
+                                root.onEscapePressed();
+                            }
+                        }
+                        Keys.onLeftPressed: event => {
+                            if (searchInput.cursorPosition === 0) {
+                                root.onLeftPressed();
+                                event.accepted = true;
+                            }
+                        }
+                        Keys.onRightPressed: event => {
+                            if (searchInput.cursorPosition === text.length) {
+                                root.onRightPressed();
+                                event.accepted = true;
+                            }
+                        }
+                        Keys.onReturnPressed: root.onReturnPressed()
+                        Keys.onEnterPressed: root.onReturnPressed()
+                        Keys.onTabPressed: event => {
+                            root.filterType = "Text";
                             event.accepted = true;
                         }
-                    }
-                    Keys.onRightPressed: event => {
-                        if (searchInput.cursorPosition === text.length) {
-                            root.onRightPressed();
+                        Keys.onUpPressed: event => {
+                            // Up = focus search (already focused, do nothing)
                             event.accepted = true;
                         }
-                    }
-                    Keys.onReturnPressed: root.onReturnPressed()
-                    Keys.onEnterPressed: root.onReturnPressed()
-                    Keys.onTabPressed: event => {
-                        root.filterType = "Text";
-                        event.accepted = true;
-                    }
-                    Keys.onUpPressed: event => {
-                        // Up = focus search (already focused, do nothing)
-                        event.accepted = true;
-                    }
-                    Keys.onDownPressed: event => {
-                        // Down = focus cards
-                        listView.forceActiveFocus();
-                        event.accepted = true;
-                    }
-                    Keys.onPressed: event => {
-                        if (event.key === Qt.Key_Home && event.modifiers & Qt.ControlModifier) {
-                            root.onHomePressed();
+                        Keys.onDownPressed: event => {
+                            // Down = focus cards
+                            listView.forceActiveFocus();
                             event.accepted = true;
-                        } else if (event.key === Qt.Key_End && event.modifiers & Qt.ControlModifier) {
-                            root.onEndPressed();
-                            event.accepted = true;
-                        } else if (event.key === Qt.Key_Delete) {
-                            // Delete current card
-                            if (listView.count > 0 && root.selectedIndex >= 0 && root.selectedIndex < listView.count) {
-                                const item = root.filteredItems[root.selectedIndex];
-                                if (item) {
-                                    pluginApi?.mainInstance?.deleteById(item.id);
-                                    if (root.selectedIndex >= listView.count - 1) {
-                                        root.selectedIndex = Math.max(0, listView.count - 2);
+                        }
+                        Keys.onPressed: event => {
+                            if (event.key === Qt.Key_Home && event.modifiers & Qt.ControlModifier) {
+                                root.onHomePressed();
+                                event.accepted = true;
+                            } else if (event.key === Qt.Key_End && event.modifiers & Qt.ControlModifier) {
+                                root.onEndPressed();
+                                event.accepted = true;
+                            } else if (event.key === Qt.Key_Delete) {
+                                // Delete current card
+                                if (listView.count > 0 && root.selectedIndex >= 0 && root.selectedIndex < listView.count) {
+                                    const item = root.filteredItems[root.selectedIndex];
+                                    if (item) {
+                                        pluginApi?.mainInstance?.deleteById(item.id);
+                                        if (root.selectedIndex >= listView.count - 1) {
+                                            root.selectedIndex = Math.max(0, listView.count - 2);
+                                        }
                                     }
                                 }
+                                event.accepted = true;
+                            } else if (event.key >= Qt.Key_0 && event.key <= Qt.Key_9) {
+                                // Number keys for filter types
+                                const filterMap = {
+                                    [Qt.Key_1]: "",
+                                    [Qt.Key_2]: "Text",
+                                    [Qt.Key_3]: "Image",
+                                    [Qt.Key_4]: "Color",
+                                    [Qt.Key_5]: "Link",
+                                    [Qt.Key_6]: "Code",
+                                    [Qt.Key_7]: "Emoji",
+                                    [Qt.Key_8]: "File"
+                                };
+                                if (filterMap.hasOwnProperty(event.key)) {
+                                    root.filterType = filterMap[event.key];
+                                    event.accepted = true;
+                                }
                             }
-                            event.accepted = true;
-                        } else if (event.key >= Qt.Key_0 && event.key <= Qt.Key_9) {
-                            // Number keys for filter types
+                        }
+                    }
+
+                    Item {
+                        Layout.fillWidth: true
+                    }
+
+                    RowLayout {
+                        spacing: Style.marginXS
+                        Layout.alignment: Qt.AlignVCenter
+
+                        NIconButton {
+                            focus: true
+                            icon: "apps"
+                            tooltipText: pluginApi?.tr("panel.filter-all") || "All"
+                            colorBg: (typeof Color !== "undefined") ? (root.filterType === "" ? Color.mPrimary : Color.mSurfaceVariant) : "#444444"
+                            colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "" ? Color.mPrimary : Color.mHover) : "#666666"
+                            colorFg: (typeof Color !== "undefined") ? (root.filterType === "" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
+                            colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
+                            onClicked: root.filterType = ""
+
+                            Keys.onTabPressed: {
+                                root.filterType = "";
+                                event.accepted = true;
+                            }
+                        }
+
+                        NIconButton {
+                            focus: true
+                            icon: "align-left"
+                            tooltipText: pluginApi?.tr("panel.filter-text") || "Text"
+                            colorBg: (typeof Color !== "undefined") ? (root.filterType === "Text" ? Color.mPrimary : Color.mSurfaceVariant) : "#444444"
+                            colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Text" ? Color.mPrimary : Color.mHover) : "#666666"
+                            colorFg: (typeof Color !== "undefined") ? (root.filterType === "Text" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
+                            colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Text" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
+                            onClicked: root.filterType = "Text"
+
+                            Keys.onTabPressed: {
+                                root.filterType = "Image";
+                                event.accepted = true;
+                            }
+                        }
+
+                        NIconButton {
+                            focus: true
+                            icon: "photo"
+                            tooltipText: pluginApi?.tr("panel.filter-images") || "Images"
+                            colorBg: (typeof Color !== "undefined") ? (root.filterType === "Image" ? Color.mTertiary : Color.mSurfaceVariant) : "#444444"
+                            colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Image" ? Color.mTertiary : Color.mHover) : "#666666"
+                            colorFg: (typeof Color !== "undefined") ? (root.filterType === "Image" ? Color.mOnTertiary : Color.mOnSurface) : "#FFFFFF"
+                            colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Image" ? Color.mOnTertiary : Color.mOnSurface) : "#FFFFFF"
+                            onClicked: root.filterType = "Image"
+                        }
+
+                        NIconButton {
+                            focus: true
+                            icon: "palette"
+                            tooltipText: pluginApi?.tr("panel.filter-colors") || "Colors"
+                            colorBg: (typeof Color !== "undefined") ? (root.filterType === "Color" ? Color.mSecondary : Color.mSurfaceVariant) : "#444444"
+                            colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Color" ? Color.mSecondary : Color.mHover) : "#666666"
+                            colorFg: (typeof Color !== "undefined") ? (root.filterType === "Color" ? Color.mOnSecondary : Color.mOnSurface) : "#FFFFFF"
+                            colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Color" ? Color.mOnSecondary : Color.mOnSurface) : "#FFFFFF"
+                            onClicked: root.filterType = "Color"
+                        }
+
+                        NIconButton {
+                            focus: true
+                            icon: "link"
+                            tooltipText: pluginApi?.tr("panel.filter-links") || "Links"
+                            colorBg: (typeof Color !== "undefined") ? (root.filterType === "Link" ? Color.mPrimary : Color.mSurfaceVariant) : "#444444"
+                            colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Link" ? Color.mPrimary : Color.mHover) : "#666666"
+                            colorFg: (typeof Color !== "undefined") ? (root.filterType === "Link" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
+                            colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Link" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
+                            onClicked: root.filterType = "Link"
+                        }
+
+                        NIconButton {
+                            focus: true
+                            icon: "code"
+                            tooltipText: pluginApi?.tr("panel.filter-code") || "Code"
+                            colorBg: (typeof Color !== "undefined") ? (root.filterType === "Code" ? Color.mSecondary : Color.mSurfaceVariant) : "#444444"
+                            colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Code" ? Color.mSecondary : Color.mHover) : "#666666"
+                            colorFg: (typeof Color !== "undefined") ? (root.filterType === "Code" ? Color.mOnSecondary : Color.mOnSurface) : "#FFFFFF"
+                            colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Code" ? Color.mOnSecondary : Color.mOnSurface) : "#FFFFFF"
+                            onClicked: root.filterType = "Code"
+                        }
+
+                        NIconButton {
+                            focus: true
+                            icon: "mood-smile"
+                            tooltipText: pluginApi?.tr("panel.filter-emoji") || "Emoji"
+                            colorBg: (typeof Color !== "undefined") ? (root.filterType === "Emoji" ? Color.mPrimary : Color.mSurfaceVariant) : "#444444"
+                            colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Emoji" ? Color.mPrimary : Color.mHover) : "#666666"
+                            colorFg: (typeof Color !== "undefined") ? (root.filterType === "Emoji" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
+                            colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Emoji" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
+                            onClicked: root.filterType = "Emoji"
+                        }
+
+                        NIconButton {
+                            focus: true
+                            icon: "file"
+                            tooltipText: pluginApi?.tr("panel.filter-files") || "Files"
+                            colorBg: (typeof Color !== "undefined") ? (root.filterType === "File" ? Color.mTertiary : Color.mSurfaceVariant) : "#444444"
+                            colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "File" ? Color.mTertiary : Color.mHover) : "#666666"
+                            colorFg: (typeof Color !== "undefined") ? (root.filterType === "File" ? Color.mOnTertiary : Color.mOnSurface) : "#FFFFFF"
+                            colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "File" ? Color.mOnTertiary : Color.mOnSurface) : "#FFFFFF"
+                            onClicked: root.filterType = "File"
+                        }
+                    }
+
+                    Rectangle {
+                        Layout.preferredWidth: 1
+                        Layout.preferredHeight: 24
+                        Layout.alignment: Qt.AlignVCenter
+                        color: (typeof Color !== "undefined") ? Color.mOutline : "#888888"
+                        opacity: 0.5
+                    }
+
+                    NButton {
+                        focus: true
+                        text: pluginApi?.tr("panel.clear-all") || "Clear All"
+                        icon: "trash"
+                        Layout.alignment: Qt.AlignVCenter
+                        Layout.topMargin: -2 * Style.uiScaleRatio
+                        onClicked: pluginApi?.mainInstance?.wipeAll()
+                    }
+                }
+
+                ListView {
+                    id: listView
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    orientation: ListView.Horizontal
+                    spacing: Style.marginM
+                    clip: true
+                    currentIndex: root.selectedIndex
+                    focus: false
+
+                    MouseArea {
+                        anchors.fill: parent
+                        acceptedButtons: Qt.NoButton
+                        onWheel: wheel => {
+                            listView.flick(wheel.angleDelta.y * 12, 0);
+                            wheel.accepted = true;
+                        }
+                    }
+
+                    model: root.filteredItems
+
+                    Keys.onUpPressed: {
+                        searchInput.forceActiveFocus();
+                    }
+                    Keys.onLeftPressed: {
+                        if (count > 0) {
+                            root.selectedIndex = Math.max(0, root.selectedIndex - 1);
+                            positionViewAtIndex(root.selectedIndex, ListView.Contain);
+                        }
+                    }
+                    Keys.onRightPressed: {
+                        if (count > 0) {
+                            root.selectedIndex = Math.min(count - 1, root.selectedIndex + 1);
+                            positionViewAtIndex(root.selectedIndex, ListView.Contain);
+                        }
+                    }
+                    Keys.onReturnPressed: {
+                        if (count > 0 && root.selectedIndex >= 0 && root.selectedIndex < count) {
+                            const item = root.filteredItems[root.selectedIndex];
+                            if (item) {
+                                root.pluginApi?.mainInstance?.copyToClipboard(item.id);
+                                if (root.pluginApi) {
+                                    root.pluginApi.closePanel(screen);
+                                }
+                            }
+                        }
+                    }
+                    Keys.onDeletePressed: {
+                        if (count > 0 && root.selectedIndex >= 0 && root.selectedIndex < count) {
+                            const item = root.filteredItems[root.selectedIndex];
+                            if (item) {
+                                root.pluginApi?.mainInstance?.deleteById(item.id);
+                                if (root.selectedIndex >= count - 1) {
+                                    root.selectedIndex = Math.max(0, count - 2);
+                                }
+                            }
+                        }
+                    }
+                    Keys.onEscapePressed: {
+                        if (root.pluginApi) {
+                            root.pluginApi.closePanel(screen);
+                        }
+                    }
+                    Keys.onTabPressed: {
+                        // Cycle through filters: All -> Text -> Image -> Color -> Link -> Code -> Emoji -> File -> All
+                        const filters = ["", "Text", "Image", "Color", "Link", "Code", "Emoji", "File"];
+                        const currentIdx = filters.indexOf(root.filterType);
+                        const nextIdx = (currentIdx + 1) % filters.length;
+                        root.filterType = filters[nextIdx];
+                    }
+                    Keys.onBacktabPressed: {
+                        // Shift+Tab = cycle backwards
+                        const filters = ["", "Text", "Image", "Color", "Link", "Code", "Emoji", "File"];
+                        const currentIdx = filters.indexOf(root.filterType);
+                        const prevIdx = (currentIdx - 1 + filters.length) % filters.length;
+                        root.filterType = filters[prevIdx];
+                    }
+                    Keys.onPressed: event => {
+                        if (event.key >= Qt.Key_0 && event.key <= Qt.Key_9) {
                             const filterMap = {
                                 [Qt.Key_1]: "",
                                 [Qt.Key_2]: "Text",
@@ -287,287 +509,65 @@ Item {
                             }
                         }
                     }
-                }
 
-                Item {
-                    Layout.fillWidth: true
-                }
-
-                RowLayout {
-                    spacing: Style.marginXS
-                    Layout.alignment: Qt.AlignVCenter
-
-                    NIconButton {
-                        focus: true
-                        icon: "apps"
-                        tooltipText: pluginApi?.tr("panel.filter-all") || "All"
-                        colorBg: (typeof Color !== "undefined") ? (root.filterType === "" ? Color.mPrimary : Color.mSurfaceVariant) : "#444444"
-                        colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "" ? Color.mPrimary : Color.mHover) : "#666666"
-                        colorFg: (typeof Color !== "undefined") ? (root.filterType === "" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
-                        colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
-                        onClicked: root.filterType = ""
-
-                        Keys.onTabPressed: {
-                            root.filterType = "";
-                            event.accepted = true;
+                    delegate: ClipboardCard {
+                        clipboardItem: modelData
+                        pluginApi: root.pluginApi
+                        screen: root.currentScreen
+                        panelRoot: root
+                        height: listView.height
+                        selected: index === root.selectedIndex
+                        enableTodoIntegration: root.pluginApi?.pluginSettings?.enableTodoIntegration || false
+                        isPinned: {
+                            // Force re-evaluation when pinnedRevision changes
+                            const rev = root.pluginApi?.mainInstance?.pinnedRevision || 0;
+                            const pinnedItems = root.pluginApi?.mainInstance?.pinnedItems || [];
+                            return pinnedItems.some(p => p.id === clipboardId);
                         }
-                    }
 
-                    NIconButton {
-                        focus: true
-                        icon: "align-left"
-                        tooltipText: pluginApi?.tr("panel.filter-text") || "Text"
-                        colorBg: (typeof Color !== "undefined") ? (root.filterType === "Text" ? Color.mPrimary : Color.mSurfaceVariant) : "#444444"
-                        colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Text" ? Color.mPrimary : Color.mHover) : "#666666"
-                        colorFg: (typeof Color !== "undefined") ? (root.filterType === "Text" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
-                        colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Text" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
-                        onClicked: root.filterType = "Text"
-
-                        Keys.onTabPressed: {
-                            root.filterType = "Image";
-                            event.accepted = true;
-                        }
-                    }
-
-                    NIconButton {
-                        focus: true
-                        icon: "photo"
-                        tooltipText: pluginApi?.tr("panel.filter-images") || "Images"
-                        colorBg: (typeof Color !== "undefined") ? (root.filterType === "Image" ? Color.mTertiary : Color.mSurfaceVariant) : "#444444"
-                        colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Image" ? Color.mTertiary : Color.mHover) : "#666666"
-                        colorFg: (typeof Color !== "undefined") ? (root.filterType === "Image" ? Color.mOnTertiary : Color.mOnSurface) : "#FFFFFF"
-                        colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Image" ? Color.mOnTertiary : Color.mOnSurface) : "#FFFFFF"
-                        onClicked: root.filterType = "Image"
-                    }
-
-                    NIconButton {
-                        focus: true
-                        icon: "palette"
-                        tooltipText: pluginApi?.tr("panel.filter-colors") || "Colors"
-                        colorBg: (typeof Color !== "undefined") ? (root.filterType === "Color" ? Color.mSecondary : Color.mSurfaceVariant) : "#444444"
-                        colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Color" ? Color.mSecondary : Color.mHover) : "#666666"
-                        colorFg: (typeof Color !== "undefined") ? (root.filterType === "Color" ? Color.mOnSecondary : Color.mOnSurface) : "#FFFFFF"
-                        colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Color" ? Color.mOnSecondary : Color.mOnSurface) : "#FFFFFF"
-                        onClicked: root.filterType = "Color"
-                    }
-
-                    NIconButton {
-                        focus: true
-                        icon: "link"
-                        tooltipText: pluginApi?.tr("panel.filter-links") || "Links"
-                        colorBg: (typeof Color !== "undefined") ? (root.filterType === "Link" ? Color.mPrimary : Color.mSurfaceVariant) : "#444444"
-                        colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Link" ? Color.mPrimary : Color.mHover) : "#666666"
-                        colorFg: (typeof Color !== "undefined") ? (root.filterType === "Link" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
-                        colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Link" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
-                        onClicked: root.filterType = "Link"
-                    }
-
-                    NIconButton {
-                        focus: true
-                        icon: "code"
-                        tooltipText: pluginApi?.tr("panel.filter-code") || "Code"
-                        colorBg: (typeof Color !== "undefined") ? (root.filterType === "Code" ? Color.mSecondary : Color.mSurfaceVariant) : "#444444"
-                        colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Code" ? Color.mSecondary : Color.mHover) : "#666666"
-                        colorFg: (typeof Color !== "undefined") ? (root.filterType === "Code" ? Color.mOnSecondary : Color.mOnSurface) : "#FFFFFF"
-                        colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Code" ? Color.mOnSecondary : Color.mOnSurface) : "#FFFFFF"
-                        onClicked: root.filterType = "Code"
-                    }
-
-                    NIconButton {
-                        focus: true
-                        icon: "mood-smile"
-                        tooltipText: pluginApi?.tr("panel.filter-emoji") || "Emoji"
-                        colorBg: (typeof Color !== "undefined") ? (root.filterType === "Emoji" ? Color.mPrimary : Color.mSurfaceVariant) : "#444444"
-                        colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "Emoji" ? Color.mPrimary : Color.mHover) : "#666666"
-                        colorFg: (typeof Color !== "undefined") ? (root.filterType === "Emoji" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
-                        colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "Emoji" ? Color.mOnPrimary : Color.mOnSurface) : "#FFFFFF"
-                        onClicked: root.filterType = "Emoji"
-                    }
-
-                    NIconButton {
-                        focus: true
-                        icon: "file"
-                        tooltipText: pluginApi?.tr("panel.filter-files") || "Files"
-                        colorBg: (typeof Color !== "undefined") ? (root.filterType === "File" ? Color.mTertiary : Color.mSurfaceVariant) : "#444444"
-                        colorBgHover: (typeof Color !== "undefined") ? (root.filterType === "File" ? Color.mTertiary : Color.mHover) : "#666666"
-                        colorFg: (typeof Color !== "undefined") ? (root.filterType === "File" ? Color.mOnTertiary : Color.mOnSurface) : "#FFFFFF"
-                        colorFgHover: (typeof Color !== "undefined") ? (root.filterType === "File" ? Color.mOnTertiary : Color.mOnSurface) : "#FFFFFF"
-                        onClicked: root.filterType = "File"
-                    }
-                }
-
-                Rectangle {
-                    Layout.preferredWidth: 1
-                    Layout.preferredHeight: 24
-                    Layout.alignment: Qt.AlignVCenter
-                    color: (typeof Color !== "undefined") ? Color.mOutline : "#888888"
-                    opacity: 0.5
-                }
-
-                NButton {
-                    focus: true
-                    text: pluginApi?.tr("panel.clear-all") || "Clear All"
-                    icon: "trash"
-                    Layout.alignment: Qt.AlignVCenter
-                    Layout.topMargin: -2 * Style.uiScaleRatio
-                    onClicked: pluginApi?.mainInstance?.wipeAll()
-                }
-            }
-
-            ListView {
-                id: listView
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                orientation: ListView.Horizontal
-                spacing: Style.marginM
-                clip: true
-                currentIndex: root.selectedIndex
-                focus: false
-
-								MouseArea {
-										anchors.fill: parent
-										acceptedButtons: Qt.NoButton
-										onWheel: wheel => {
-												listView.flick(wheel.angleDelta.y * 12, 0)
-												wheel.accepted = true;
-										}
-								}
-
-                model: root.filteredItems
-
-                Keys.onUpPressed: {
-                    searchInput.forceActiveFocus();
-                }
-                Keys.onLeftPressed: {
-                    if (count > 0) {
-                        root.selectedIndex = Math.max(0, root.selectedIndex - 1);
-                        positionViewAtIndex(root.selectedIndex, ListView.Contain);
-                    }
-                }
-                Keys.onRightPressed: {
-                    if (count > 0) {
-                        root.selectedIndex = Math.min(count - 1, root.selectedIndex + 1);
-                        positionViewAtIndex(root.selectedIndex, ListView.Contain);
-                    }
-                }
-                Keys.onReturnPressed: {
-                    if (count > 0 && root.selectedIndex >= 0 && root.selectedIndex < count) {
-                        const item = root.filteredItems[root.selectedIndex];
-                        if (item) {
-                            root.pluginApi?.mainInstance?.copyToClipboard(item.id);
+                        onClicked: {
+                            root.selectedIndex = index;
+                            root.pluginApi?.mainInstance?.copyToClipboard(clipboardId);
                             if (root.pluginApi) {
                                 root.pluginApi.closePanel(screen);
                             }
                         }
-                    }
-                }
-                Keys.onDeletePressed: {
-                    if (count > 0 && root.selectedIndex >= 0 && root.selectedIndex < count) {
-                        const item = root.filteredItems[root.selectedIndex];
-                        if (item) {
-                            root.pluginApi?.mainInstance?.deleteById(item.id);
-                            if (root.selectedIndex >= count - 1) {
-                                root.selectedIndex = Math.max(0, count - 2);
-                            }
+
+                        onDeleteClicked: {
+                            root.pluginApi?.mainInstance?.deleteById(clipboardId);
                         }
-                    }
-                }
-                Keys.onEscapePressed: {
-                    if (root.pluginApi) {
-                        root.pluginApi.closePanel(screen);
-                    }
-                }
-                Keys.onTabPressed: {
-                    // Cycle through filters: All -> Text -> Image -> Color -> Link -> Code -> Emoji -> File -> All
-                    const filters = ["", "Text", "Image", "Color", "Link", "Code", "Emoji", "File"];
-                    const currentIdx = filters.indexOf(root.filterType);
-                    const nextIdx = (currentIdx + 1) % filters.length;
-                    root.filterType = filters[nextIdx];
-                }
-                Keys.onBacktabPressed: {
-                    // Shift+Tab = cycle backwards
-                    const filters = ["", "Text", "Image", "Color", "Link", "Code", "Emoji", "File"];
-                    const currentIdx = filters.indexOf(root.filterType);
-                    const prevIdx = (currentIdx - 1 + filters.length) % filters.length;
-                    root.filterType = filters[prevIdx];
-                }
-                Keys.onPressed: event => {
-                    if (event.key >= Qt.Key_0 && event.key <= Qt.Key_9) {
-                        const filterMap = {
-                            [Qt.Key_1]: "",
-                            [Qt.Key_2]: "Text",
-                            [Qt.Key_3]: "Image",
-                            [Qt.Key_4]: "Color",
-                            [Qt.Key_5]: "Link",
-                            [Qt.Key_6]: "Code",
-                            [Qt.Key_7]: "Emoji",
-                            [Qt.Key_8]: "File"
-                        };
-                        if (filterMap.hasOwnProperty(event.key)) {
-                            root.filterType = filterMap[event.key];
-                            event.accepted = true;
-                        }
-                    }
-                }
 
-                delegate: ClipboardCard {
-                    clipboardItem: modelData
-                    pluginApi: root.pluginApi
-                    screen: root.currentScreen
-                    panelRoot: root
-                    height: listView.height
-                    selected: index === root.selectedIndex
-                    enableTodoIntegration: root.pluginApi?.pluginSettings?.enableTodoIntegration || false
-                    isPinned: {
-                        // Force re-evaluation when pinnedRevision changes
-                        const rev = root.pluginApi?.mainInstance?.pinnedRevision || 0;
-                        const pinnedItems = root.pluginApi?.mainInstance?.pinnedItems || [];
-                        return pinnedItems.some(p => p.id === clipboardId);
-                    }
-
-                    onClicked: {
-                        root.selectedIndex = index;
-                        root.pluginApi?.mainInstance?.copyToClipboard(clipboardId);
-                        if (root.pluginApi) {
-                            root.pluginApi.closePanel(screen);
-                        }
-                    }
-
-                    onDeleteClicked: {
-                        root.pluginApi?.mainInstance?.deleteById(clipboardId);
-                    }
-
-                    onPinClicked: {
-                        if (isPinned) {
-                            root.pluginApi?.mainInstance?.unpinItem(clipboardId);
-                            ToastService.showNotice(pluginApi?.tr("toast.item-unpinned") || "Item unpinned");
-                        } else {
-                            const pinnedItems = root.pluginApi?.mainInstance?.pinnedItems || [];
-                            if (pinnedItems.length >= 20) {
-                                ToastService.showWarning((pluginApi?.tr("toast.max-pinned-items") || "Maximum {max} pinned items reached").replace("{max}", "20"));
+                        onPinClicked: {
+                            if (isPinned) {
+                                root.pluginApi?.mainInstance?.unpinItem(clipboardId);
+                                ToastService.showNotice(pluginApi?.tr("toast.item-unpinned") || "Item unpinned");
                             } else {
-                                root.pluginApi?.mainInstance?.pinItem(clipboardId);
-                                ToastService.showNotice(pluginApi?.tr("toast.item-pinned") || "Item pinned");
+                                const pinnedItems = root.pluginApi?.mainInstance?.pinnedItems || [];
+                                if (pinnedItems.length >= 20) {
+                                    ToastService.showWarning((pluginApi?.tr("toast.max-pinned-items") || "Maximum {max} pinned items reached").replace("{max}", "20"));
+                                } else {
+                                    root.pluginApi?.mainInstance?.pinItem(clipboardId);
+                                    ToastService.showNotice(pluginApi?.tr("toast.item-pinned") || "Item pinned");
+                                }
+                            }
+                        }
+
+                        onAddToTodoClicked: {
+                            if (preview) {
+                                // Direct call to Main.qml function (no internal IPC)
+                                root.pluginApi?.mainInstance?.addTodoWithText(preview.substring(0, 200), 0);
                             }
                         }
                     }
 
-                    onAddToTodoClicked: {
-                        if (preview) {
-                            // Direct call to Main.qml function (no internal IPC)
-                            root.pluginApi?.mainInstance?.addTodoWithText(preview.substring(0, 200), 0);
-                        }
+                    NText {
+                        anchors.centerIn: parent
+                        visible: listView.count === 0
+                        text: root.filterType || root.searchText ? (pluginApi?.tr("panel.no-matches") || "No matching items") : (pluginApi?.tr("panel.empty") || "Clipboard is empty")
+                        color: (typeof Color !== "undefined") ? Color.mOnSurfaceVariant : "#AAAAAA"
                     }
-                }
-
-                NText {
-                    anchors.centerIn: parent
-                    visible: listView.count === 0
-                    text: root.filterType || root.searchText ? (pluginApi?.tr("panel.no-matches") || "No matching items") : (pluginApi?.tr("panel.empty") || "Clipboard is empty")
-                    color: (typeof Color !== "undefined") ? Color.mOnSurfaceVariant : "#AAAAAA"
                 }
             }
-        }
         }  // End clipboardPanel
 
         // PINNED PANEL - Left side, vertical
@@ -602,8 +602,6 @@ Item {
                     Item {
                         Layout.fillWidth: true
                     }
-
-
                 }
                 ListView {
                     id: pinnedListView
@@ -622,7 +620,8 @@ Item {
                         clipboardItem: {
                             return {
                                 "id": modelData.id,
-                                "preview": modelData.isImage ? "" : modelData.preview,  // Don't show binary preview
+                                "preview": modelData.isImage ? "" : modelData.preview  // Don't show binary preview
+                                ,
                                 "mime": modelData.mime || "text/plain",
                                 "isImage": modelData.isImage || false,
                                 "content": modelData.content || ""  // For images, this is data URL
@@ -661,30 +660,30 @@ Item {
             }
         }  // End pinnedPanel
 
-				// Vertical separator between pinned and notecards
-				Rectangle {
-						visible: pinnedPanel.visible && noteCardsPanel.visible
-						anchors.left: pinnedPanel.right
-						anchors.top: parent.top
-						anchors.bottom: clipboardPanel.top
-						anchors.bottomMargin: Style.marginM
-						width: 1
-						color: "transparent"
+        // Vertical separator between pinned and notecards
+        Rectangle {
+            visible: pinnedPanel.visible && noteCardsPanel.visible
+            anchors.left: pinnedPanel.right
+            anchors.top: parent.top
+            anchors.bottom: clipboardPanel.top
+            anchors.bottomMargin: Style.marginM
+            width: 1
+            color: "transparent"
 
-						Column {
-								anchors.centerIn: parent
-								spacing: 10
-								Repeater {
-										model: 27
-										Rectangle {
-												width: 2
-												height: 8
-												color: (typeof Color !== "undefined") ? Color.mOutline : "#555555"
-												opacity: 0.7
-										}
-								}
-						}
-				}
+            Column {
+                anchors.centerIn: parent
+                spacing: 10
+                Repeater {
+                    model: 27
+                    Rectangle {
+                        width: 2
+                        height: 8
+                        color: (typeof Color !== "undefined") ? Color.mOutline : "#555555"
+                        opacity: 0.7
+                    }
+                }
+            }
+        }
 
         // NOTECARDS PANEL - Middle space (between pinned and clipboard)
         Item {
@@ -703,7 +702,6 @@ Item {
                 pluginApi: root.pluginApi
                 screen: root.currentScreen
             }
-
         }  // End noteCardsPanel
     }  // End mainContainer
 
@@ -715,6 +713,4 @@ Item {
         listView.forceActiveFocus();
         WlrLayershell.keyboardFocus = WlrKeyboardFocus.OnDemand;
     }
-
-
 }
