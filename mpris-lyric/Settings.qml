@@ -67,7 +67,9 @@ ColumnLayout {
     spacing: Style.marginS
 
     NLabel {
-      label: pluginApi?.tr("settings.update-interval") + ": " + root.editUpdateInterval + "ms"
+      label: pluginApi?.tr("settings.update-interval", {
+        value: root.editUpdateInterval
+      })
       description: pluginApi?.tr("settings.update-interval-desc")
     }
 
@@ -87,7 +89,9 @@ ColumnLayout {
     spacing: Style.marginS
 
     NLabel {
-      label: pluginApi?.tr("settings.width") + ": " + root.editWidth + "px"
+      label: pluginApi?.tr("settings.width", {
+        value: root.editWidth
+      })
       description: pluginApi?.tr("settings.width-desc")
     }
 
