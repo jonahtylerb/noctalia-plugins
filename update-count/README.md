@@ -7,6 +7,7 @@ A compact Noctalia bar widget that periodically checks for available system upda
 - **Periodic Update Checks**: Polls at a configurable interval and updates the displayed count.
 - **Package Manager Detection**: Supports common update-check/update flows for supported distros (see Requirements).
 - **Click to Update**: Launches a terminal to execute the configured system update command.
+- **Package List Tooltip**: Hovering the widget shows a list of all pending package names (up to 20, with overflow indicator).
 - **Custom Commands**: Optional custom commands for both “get number of updates” and “do system update”.
 
 ## Installation
@@ -30,7 +31,7 @@ Configure the plugin in Noctalia settings:
 
 - **Display**: Shows an icon and the current update count.
 - **Click**: Spawns the configured terminal command and executes the system update command.
-- **Hover**: Shows a tooltip indicating whether updates are available or not.
+- **Hover**: Shows a tooltip listing the pending package names when using a built-in package manager, or a summary count when using a custom command.
 
 ## Requirements
 
@@ -46,6 +47,7 @@ Configure the plugin in Noctalia settings:
     - perform the system update (`cmdDoSystemUpdate`).
   - At runtime, the plugin selects the **first available** updater whose required executable checks succeed.
   - If no updater matches, the plugin relies on the **custom command** settings.
+  - Built-in updaters also provide a `cmdGetPackageList` command that outputs one package name per line, used to populate the tooltip.
 
 - **Supported package managers / tools**:
   - Arch Linux: `pacman`; `yay`, `paru` (AUR helpers)

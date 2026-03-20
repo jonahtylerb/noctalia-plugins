@@ -42,6 +42,8 @@
   },
   "tooltip": {
     "noUpdatesAvailable": "No updates detected",
-    "updatesAvailable": "Click to run the configured system update command"
+    "updatesAvailable": "Click to run the configured system update command",
+    "updatesAvailableHeader": "{count} updates available:",
+    "andMoreUpdates": "...and {more} more"
   }
 }

@@ -136,9 +136,24 @@ Item {
 
   function buildTooltip() {
     const updateCount = root.pluginApi?.mainInstance?.updateCount
+    const packageList = root.pluginApi?.mainInstance?.packageList || []
 
     if (updateCount === 0) {
       TooltipService.show(root, pluginApi?.tr("tooltip.noUpdatesAvailable"), BarService.getTooltipDirection(root.screenName));
+      return;
+    }
+
+    if (packageList.length > 0) {
+      const maxDisplay = 20;
+      const displayed = packageList.slice(0, maxDisplay);
+      const overflow = packageList.length - maxDisplay;
+
+      var tooltip = pluginApi?.tr("tooltip.updatesAvailableHeader").replace("{count}", updateCount);
+      tooltip += "\n" + displayed.join("\n");
+      if (overflow > 0) {
+        tooltip += "\n" + pluginApi?.tr("tooltip.andMoreUpdates").replace("{more}", overflow);
+      }
+      TooltipService.show(root, tooltip, BarService.getTooltipDirection(root.screenName));
     } else {
       TooltipService.show(root, pluginApi?.tr("tooltip.updatesAvailable"), BarService.getTooltipDirection(root.screenName));
     }

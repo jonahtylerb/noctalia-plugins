@@ -15,6 +15,7 @@ Item {
   readonly property string updateTerminalCommand: pluginApi?.pluginSettings.updateTerminalCommand || pluginApi?.manifest?.metadata.defaultSettings?.updateTerminalCommand || ""
 
   property int updateCount: 0
+  property var packageList: []
   property var updater: null
   property var customUpdater: ({
     name: "custom",
@@ -90,9 +91,36 @@ Item {
   }
 
   function startGetNumUpdates() {
-    const cmd = root.customUpdater.cmdGetNumUpdates || root.updater.cmdGetNumUpdates || "exit 1"
-    getNumUpdates.command = ["sh", "-c", cmd]
-    getNumUpdates.running = true;
+    const customCountCmd = root.customUpdater.cmdGetNumUpdates || ""
+    const listCmd = root.updater?.cmdGetPackageList || ""
+    Logger.d("UpdateCount", `startGetNumUpdates: updater=${root.updater?.name}, customCountCmd="${customCountCmd}", listCmd="${listCmd}"`)
+    if (customCountCmd) {
+      Logger.d("UpdateCount", "Using custom count command")
+      getNumUpdates.command = ["sh", "-c", customCountCmd]
+      getNumUpdates.running = true;
+    } else if (listCmd) {
+      Logger.d("UpdateCount", "Using package list command")
+      getPackageList.command = ["sh", "-c", listCmd]
+      getPackageList.running = true;
+    } else {
+      const countCmd = root.updater?.cmdGetNumUpdates || "exit 1"
+      Logger.d("UpdateCount", `Fallback to count command: "${countCmd}"`)
+      getNumUpdates.command = ["sh", "-c", countCmd]
+      getNumUpdates.running = true;
+    }
+  }
+
+  Process {
+    id: getPackageList
+
+    stdout: StdioCollector {
+      onStreamFinished: {
+        const lines = text.trim().split("\n").filter(line => line.trim() !== "");
+        root.packageList = lines;
+        root.updateCount = lines.length;
+        Logger.i("UpdateCount", `Updates available: ${root.updateCount}`);
+      }
+    }
   }
 
   Process {
@@ -101,6 +129,7 @@ Item {
     stdout: StdioCollector {
       onStreamFinished: {
         var count = parseInt(text.trim());
+        root.packageList = [];
         root.updateCount = isNaN(count) ? -1 : count;
         if (root.updateCount >= 0) {
           Logger.i("UpdateCount", `Updates available: ${root.updateCount}`);
